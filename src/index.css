@@ -1,0 +1,505 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --gradient-primary: linear-gradient(135deg, #a855f7 0%, #7c3aed 50%, #6366f1 100%);
+    --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+    --gradient-success: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --gradient-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --gradient-mesh: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-aurora: linear-gradient(135deg, #a855f7 0%, #06b6d4 50%, #a855f7 100%);
+    --gradient-subtle: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+    background-attachment: fixed;
+    height: 100vh;
+    overflow: hidden;
+    color: #1e293b;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background: rgba(168, 85, 247, 0.2);
+    color: #7c3aed;
+  }
+}
+
+@layer components {
+  /* ==========================================
+     MODERN BUTTON SYSTEM
+     ========================================== */
+  .btn {
+    @apply inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 transform active:scale-[0.98];
+  }
+
+  .btn-primary {
+    @apply btn text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #9333ea 0%, #6d28d9 100%);
+  }
+  .btn-primary:focus {
+    @apply ring-primary-400;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-neutral-100 text-neutral-700 hover:bg-neutral-200 hover:text-neutral-900 focus:ring-neutral-300;
+  }
+
+  .btn-success {
+    @apply btn text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  }
+  .btn-success:hover {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  }
+  .btn-success:focus {
+    @apply ring-success-400;
+  }
+
+  .btn-danger {
+    @apply btn text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+  .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  }
+  .btn-danger:focus {
+    @apply ring-danger-400;
+  }
+
+  .btn-warning {
+    @apply btn text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+  .btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  }
+  .btn-warning:focus {
+    @apply ring-warning-400;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-neutral-600 hover:bg-neutral-100 hover:text-neutral-800 focus:ring-neutral-300 border border-neutral-200 hover:border-neutral-300;
+  }
+
+  .btn-outline {
+    @apply btn bg-transparent text-primary-600 hover:bg-primary-50 focus:ring-primary-300 border-2 border-primary-300 hover:border-primary-400;
+  }
+
+  .btn-glass {
+    @apply btn text-neutral-800 border border-white/30 hover:border-white/50 backdrop-blur-md;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Button sizes */
+  .btn-xs {
+    @apply px-2.5 py-1 text-xs rounded-lg;
+  }
+
+  .btn-sm {
+    @apply px-3.5 py-1.5 text-sm rounded-lg;
+  }
+
+  .btn-md {
+    @apply px-5 py-2.5 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-7 py-3.5 text-base;
+  }
+
+  /* ==========================================
+     MODERN CARD SYSTEM (Glass Morphism)
+     ========================================== */
+  .card {
+    @apply rounded-2xl shadow-card border border-neutral-100/80 backdrop-blur-sm transition-all duration-300;
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  .card:hover {
+    @apply shadow-card-hover;
+  }
+
+  .card-glass {
+    @apply rounded-2xl shadow-glass border border-white/30 backdrop-blur-xl;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .card-body {
+    @apply p-6;
+  }
+
+  .card-header {
+    @apply px-6 py-4 border-b border-neutral-100;
+  }
+
+  .card-footer {
+    @apply px-6 py-4 border-t border-neutral-100 bg-neutral-50/50 rounded-b-2xl;
+  }
+
+  /* ==========================================
+     MODERN INPUT SYSTEM
+     ========================================== */
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-neutral-200 rounded-xl bg-white/80 backdrop-blur-sm text-neutral-900 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-400/50 focus:border-primary-400 transition-all duration-300;
+  }
+
+  .input-field:hover {
+    @apply border-neutral-300 bg-white;
+  }
+
+  .input-field-error {
+    @apply border-danger-300 focus:ring-danger-400/50 focus:border-danger-400 bg-danger-50/30;
+  }
+
+  .input-field-success {
+    @apply border-success-300 focus:ring-success-400/50 focus:border-success-400 bg-success-50/30;
+  }
+
+  /* Form Components */
+  .form-group {
+    @apply mb-5;
+  }
+
+  .form-label {
+    @apply block text-sm font-semibold text-neutral-700 mb-2;
+  }
+
+  .form-input {
+    @apply input-field;
+  }
+
+  .form-select {
+    @apply input-field appearance-none bg-no-repeat bg-right pr-12 cursor-pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 1rem center;
+    background-size: 1.25em 1.25em;
+  }
+
+  .form-checkbox {
+    @apply h-5 w-5 text-primary-600 focus:ring-primary-400/50 border-neutral-300 rounded-md transition-all duration-200;
+  }
+
+  .form-checkbox:checked {
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  }
+
+  .form-radio {
+    @apply h-5 w-5 text-primary-600 focus:ring-primary-400/50 border-neutral-300 transition-all duration-200;
+  }
+
+  .checkbox-label {
+    @apply flex items-center gap-3 text-sm text-neutral-700 cursor-pointer select-none;
+  }
+
+  .form-error {
+    @apply text-sm text-danger-600 mt-1.5 flex items-center gap-1;
+  }
+
+  .form-hint {
+    @apply text-sm text-neutral-500 mt-1.5;
+  }
+
+  /* Property Sections */
+  .property-section {
+    @apply mb-7;
+  }
+
+  /* ==========================================
+     MODERN BADGE SYSTEM
+     ========================================== */
+  .badge {
+    @apply inline-flex items-center font-semibold rounded-full tracking-wide;
+  }
+
+  .badge-sm {
+    @apply px-2.5 py-0.5 text-2xs;
+  }
+
+  .badge-md {
+    @apply px-3 py-1 text-xs;
+  }
+
+  .badge-lg {
+    @apply px-4 py-1.5 text-sm;
+  }
+
+  .badge-primary {
+    @apply badge bg-gradient-to-r from-primary-100 to-primary-50 text-primary-700 border border-primary-200/50;
+  }
+
+  .badge-success {
+    @apply badge bg-gradient-to-r from-success-100 to-success-50 text-success-700 border border-success-200/50;
+  }
+
+  .badge-danger {
+    @apply badge bg-gradient-to-r from-danger-100 to-danger-50 text-danger-700 border border-danger-200/50;
+  }
+
+  .badge-warning {
+    @apply badge bg-gradient-to-r from-warning-100 to-warning-50 text-warning-700 border border-warning-200/50;
+  }
+
+  .badge-info {
+    @apply badge bg-gradient-to-r from-info-100 to-info-50 text-info-700 border border-info-200/50;
+  }
+
+  .badge-neutral {
+    @apply badge bg-gradient-to-r from-neutral-100 to-neutral-50 text-neutral-700 border border-neutral-200/50;
+  }
+
+  .badge-accent {
+    @apply badge bg-gradient-to-r from-accent-100 to-accent-50 text-accent-700 border border-accent-200/50;
+  }
+
+  /* ==========================================
+     MODERN TABLE SYSTEM
+     ========================================== */
+  .table-container {
+    @apply overflow-x-auto rounded-xl;
+  }
+
+  .table {
+    @apply min-w-full divide-y divide-neutral-100;
+  }
+
+  .table-header {
+    @apply bg-gradient-to-r from-neutral-50 to-neutral-100/50;
+  }
+
+  .table-header-cell {
+    @apply px-6 py-4 text-left text-xs font-bold text-neutral-600 uppercase tracking-wider;
+  }
+
+  .table-body {
+    @apply bg-white/80 backdrop-blur-sm divide-y divide-neutral-100;
+  }
+
+  .table-row {
+    @apply hover:bg-primary-50/30 transition-all duration-200;
+  }
+
+  .table-cell {
+    @apply px-6 py-4 text-sm text-neutral-700;
+  }
+
+  /* ==========================================
+     MODERN ALERT SYSTEM
+     ========================================== */
+  .alert {
+    @apply p-4 rounded-xl border backdrop-blur-sm flex items-start gap-3;
+  }
+
+  .alert-info {
+    @apply alert bg-info-50/80 border-info-200/50 text-info-800;
+  }
+
+  .alert-success {
+    @apply alert bg-success-50/80 border-success-200/50 text-success-800;
+  }
+
+  .alert-warning {
+    @apply alert bg-warning-50/80 border-warning-200/50 text-warning-800;
+  }
+
+  .alert-danger {
+    @apply alert bg-danger-50/80 border-danger-200/50 text-danger-800;
+  }
+
+  /* ==========================================
+     MODERN MODAL SYSTEM
+     ========================================== */
+  .modal-overlay {
+    @apply fixed inset-0 bg-neutral-900/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50 animate-fade-in;
+  }
+
+  .modal-container {
+    @apply relative top-10 mx-auto p-6 border border-neutral-100 shadow-2xl rounded-2xl bg-white/95 backdrop-blur-xl max-h-[90vh] overflow-y-auto animate-scale-in;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between mb-6 pb-4 border-b border-neutral-100;
+  }
+
+  .modal-title {
+    @apply text-xl font-bold text-neutral-900;
+  }
+
+  .modal-close {
+    @apply text-neutral-400 hover:text-neutral-600 transition-all duration-200 p-1 rounded-lg hover:bg-neutral-100;
+  }
+
+  /* ==========================================
+     STATUS INDICATORS
+     ========================================== */
+  .status-dot {
+    @apply w-2.5 h-2.5 rounded-full ring-2 ring-offset-1;
+  }
+
+  .status-dot-success {
+    @apply status-dot bg-success-500 ring-success-200;
+  }
+
+  .status-dot-danger {
+    @apply status-dot bg-danger-500 ring-danger-200;
+  }
+
+  .status-dot-warning {
+    @apply status-dot bg-warning-500 ring-warning-200;
+  }
+
+  .status-dot-info {
+    @apply status-dot bg-info-500 ring-info-200;
+  }
+
+  .status-dot-neutral {
+    @apply status-dot bg-neutral-400 ring-neutral-200;
+  }
+
+  .status-dot-pulse {
+    @apply animate-pulse;
+  }
+
+  /* ==========================================
+     FOCUS UTILITIES
+     ========================================== */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-400/50 focus:ring-offset-2;
+  }
+
+  .focus-ring-danger {
+    @apply focus:outline-none focus:ring-2 focus:ring-danger-400/50 focus:ring-offset-2;
+  }
+
+  /* ==========================================
+     INTERACTIVE LIST ITEMS
+     ========================================== */
+  .list-item-interactive {
+    @apply px-4 py-3.5 hover:bg-primary-50/50 cursor-pointer transition-all duration-200 border-b border-neutral-100 last:border-b-0 rounded-lg mx-1;
+  }
+
+  .list-item-active {
+    @apply bg-gradient-to-r from-primary-50 to-primary-100/50 border-l-4 border-l-primary-500 rounded-l-none;
+  }
+
+  /* ==========================================
+     GLASS MORPHISM UTILITIES
+     ========================================== */
+  .glass {
+    @apply backdrop-blur-xl border border-white/30;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-xl border border-neutral-700/30;
+    background: rgba(15, 23, 42, 0.8);
+  }
+
+  /* ==========================================
+     GRADIENT UTILITIES
+     ========================================== */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+  }
+
+  .gradient-border {
+    @apply relative;
+  }
+  .gradient-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl -z-10;
+    background: linear-gradient(135deg, #a855f7 0%, #06b6d4 100%);
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* ==========================================
+     LOADING/SKELETON
+     ========================================== */
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-neutral-200 via-neutral-100 to-neutral-200 rounded-lg;
+    background-size: 200% 100%;
+  }
+
+  .shimmer {
+    @apply relative overflow-hidden;
+  }
+  .shimmer::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+}
+
+/* ==========================================
+   MODERN SCROLLBAR STYLES
+   ========================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Scrollable panel utilities */
+.scrollable-panel,
+.sidebar-scrollable,
+.canvas-scrollable,
+.property-panel-scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 transparent;
+}
+
+/* App container */
+.App {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-attachment: fixed;
+}
