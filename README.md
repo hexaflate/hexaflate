@@ -1,153 +1,154 @@
-# 🚀 **Hexaflate - Solusi Aplikasi Mobile untuk Sistem Otomax**
+# Hexaflate
 
-## 📱 **Tentang Hexaflate**
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org)
+[![Axum](https://img.shields.io/badge/Axum-000000?style=for-the-badge&logo=rust&logoColor=white)](https://github.com/tokio-rs/axum)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-lightgrey?style=for-the-badge)](https://flutter.dev)
 
-Hexaflate adalah aplikasi mobile berbasis Flutter yang dibuat untuk sistem Otomax. Aplikasi ini dirancang agar ringan, cepat, dan mudah digunakan.
+Solusi aplikasi mobile untuk sistem Otomax yang dibangun dengan Flutter dan Rust.
 
-### 🏗️ **Hexaflate Built**
+## Tentang
+
+Hexaflate adalah aplikasi mobile berbasis Flutter yang dirancang untuk sistem Otomax. Aplikasi ini dibangun agar ringan, cepat, dan mudah digunakan.
+
+## Tech Stack
 
 - **Frontend**: Flutter (Cross-platform mobile app)
 - **Backend**: Rust-Axum (High-performance server)
-- **Database**: Self-hosted (Tanpa Biaya VPS Tambahan)
+- **Database**: Self-hosted
 - **Deployment**: Containerized (Docker)
 - **Security**: Multi-layer authentication
 
----
+## Instalasi
 
-## 📦 **Instalasi Backend**
+Untuk panduan lengkap instalasi backend, kunjungi: [Hexaflate Install Wiki](https://github.com/hexaflate/hexaflate/wiki)
 
-Untuk panduan lengkap instalasi backend, silakan kunjungi: [Hexaflate Install Wiki](https://github.com/hexaflate/hexaflate/wiki)
+## Fitur
 
----
+### Security
 
-## 🎯 **Fitur Unggulan Hexaflate**
+- Autentikasi biometric (fingerprint atau face recognition dengan PIN fallback)
+- Verifikasi PIN transaksi untuk setiap transaksi
+- Verifikasi identitas dengan KTP dan selfie
+- Batas transaksi berbasis session untuk login baru
 
-### 🔐 **1. Keamanan Seperti E-Wallet**
+### Aplikasi Modern
 
-- **Autentikasi biometrik** - sidik jari atau wajah (fallback ke PIN)
-- **PIN transaksi** - verifikasi khusus untuk setiap transaksi
+- Dibangun khusus untuk sistem bisnis Otomax
+- UI/UX modern mirip aplikasi e-wallet populer
+- Update real-time tanpa replikasi database
+- Material Design untuk navigasi yang intuitif
 
-### 📱 **2. Aplikasi Modern**
+### Fitur Fokus Agen
 
-- **Dibuat khusus untuk bisnis Otomax** - karena fokus pada otomax, tidak ada overhead yang mengganggu.
-- **Tampilan modern dan mudah dipakai** - seperti aplikasi e-wallet populer
-- **Realtime Update** - karena sistem tidak mereplika database otomax semua perubahan diotomax langsung update realtime ke aplikasi, tidak akan ada masalah synchronization.
+- Pengecekan detail customer opsional
+- Receipt digital otomatis (dapat dibagikan dan dicetak)
+- Riwayat transaksi yang jelas (mengecualikan produk cek Rp. 0)
+- Sembunyikan produk harga nol dari daftar produk
+- Sistem polling transaksi real-time
+- Registrasi agen langsung via aplikasi
+- Sistem multi-referral code (hingga 5 kode per agen)
+- Menu transfer saldo terpadu
+- Monitoring performa agen
 
-### 💳 **3. Dibuat Dari Feedback Agen-Agen Pulsa**
+### Pencegahan Fraud
 
-- **Cek Detail Pelanggan Tanpa Konfirmasi** Seperti aplikasi modern pada umumnya, cek detail pelanggan hanya opsional, kendala pada pengecekkan pelanggan bisa diabaikan dan bisa langsung transaksi.
-- **Struk digital otomatis** - Struk bisa langsung dishare atau diprint
-- **Riwayat transaksi Jelas** - Transaksi Produk Cek (Rp. 0,-) Bisa diabaikan, sehingga membuat riwayat transaksi jelas. Karena maraknya member yang bingung dengan produk CEK di riwayat transaksi.
-- **Hanya tampilkan produk yang ada harganya** - Produk Harga Rp. 0,- bisa dihide dari list produk, untuk memperjelas yang mana produk cek dan mana produk real.
-- **Transaksi pending dengan sistem Polling** - karena sistem pending dengan polling, transaksi akan sukses real time dengan otomax, tanpa menunggu notifikasi masuk apabila google play service & fcm sedang lamban.
-- **Daftarkan agen baru** - mendaftarkan agen langsung via aplikasi.
-- **Sistem referral** - sistem referal dengan multiple kode referal, setiap agen boleh memiliki kode referal lebih dari satu (maximal 5 kode referal).
-- **Transfer saldo ke agen di satu menu** - tidak perlu dua menu untuk transfer saldo, satu menu sudah deteksi otomatis tujuan transfer bebas atau ke downline.
-- **Lihat performa setiap agen** - bisa langsung cek jumlah transaksi downline.
+- Mode verifikasi dengan KTP dan selfie
+- Proteksi keagenan (hanya member terverifikasi yang dapat mendaftarkan agen)
+- Batas transaksi session baru
+- Penandaan session aman untuk mengangkat pembatasan akun
 
-### 👥 **4. Pencegah Penipuan Dengan Mudah**
+### Kustomisasi Lengkap
 
-- **Fitur verifikasi** - fitur verifikasi mode ON, ktp dan selfie.
-- **Proteksi Keagenan** - Hanya member yang sudah verifikasi bisa mendaftarkan agen(fitur proteksi ini bisa dioffkan jika tidak sesuai)
-- **Proteksi Transaksi Di Sesi Baru** Mitra yang baru login dibatasi transaksinya di nilai tertentu dan maximal total tertentu sesuai pengaturan (dapat dioffkan dengan menaikkan limit maximal). Sesi mitra bisa ditandai aman untuk mengangkat pembatasan akunnya.
+- Panel admin untuk perubahan menu, tampilan, dan fitur
+- Posisi widget yang fleksibel
+- Banner dinamis untuk promosi
+- Widget Cards untuk membuat menu dalam bentuk kartu
+- Pengaturan tampilan personal (warna, logo, header, navigasi)
+- Layout submenu yang bervariasi (list, grid, bottom sheet)
+- Notifikasi canggih dengan dukungan gambar dan URL
 
-### ⚙️ **5. Kustomisasi Lengkap**
+### Dukungan Multi-Device
 
-- **Panel admin terpusat** - ubah menu, tampilan, dan fitur tanpa update aplikasi
-- **Widget fleksibel** - pindah-pindah dan pilih sesuai kebutuhan
-- **Banner dinamis** - promosi dan selamat datang bisa diganti kapan saja
-- **Tampilan personal** - warna, logo, header, navigasi dan model kartu saldo
-- **Submenu variatif** - list, grid, atau bottom sheet
-- **Notifikasi canggih** - support gambar dan URL untuk broadcast, dan dapat dipisah berdasarkan level grup member
+- Satu akun, multiple devices
+- Sinkronisasi otomatis di semua perangkat
+- Tidak ada batasan jumlah device
 
-### 🌐 **6. Multi-Device Support**
+### Customer Chat Service (Add-on Opsional)
 
-- **Satu akun, banyak perangkat** - login di beberapa HP sekaligus, cocok untuk konter dengan cabang
-- **Sinkronisasi otomatis** - data update real-time di semua perangkat
-- **Tidak ada batas jumlah perangkat**
+- Chat langsung dengan admin melalui web panel
+- Notifikasi terorganisir (admin, transaksi, pesan deposit)
+- Firebase Cloud Messaging untuk notifikasi real-time
+- Interface percakapan sederhana dengan dukungan media
+- Instant messaging via WebSocket
 
-### 💬 **7. Customer Chat Service(Opsional Add On)**
+### Interface Modern
 
-- **Chat langsung dengan admin** - terorganisir di web admin panel, dengan notifikasi dan suara.
-- **Notifikasi terorganisir** - pesan dari admin, pesan transaksi, pesan deposit dan biasa dipisah
-- **Notifikasi menggunakan FCM** - firebase cloud messaging untuk notifikasi real time
-- **Percakapan simple** - mudah dan familiar, support kirim video gambar dan voicenote
-- **Jawaban cepat** - Dengan websocket, panel admin menerima pesan dari mitra secara instant, begitu juga mitra menerima pesan dari admin.
+- Dukungan dark mode
+- Tampilan aplikasi modern
+- Navigasi intuitif dengan Material Design
+- Animasi halus premium
 
-### 🌙 **8. Mode Gelap & Tampilan Modern**
+### Verifikasi & Login Mudah
 
-- **Mode gelap untuk mata** - tidak silau kalau pakai malam hari
-- **Tampilan seperti aplikasi modern**
-- **Navigasi mudah dipahami** - tidak perlu belajar lama. Material Design mudah dipahami pengguna android.
-- **Animasi halus** - seperti aplikasi premium
+- Login hanya dengan nomor telepon
+- Opsi Google Login
+- Perubahan PIN mudah tanpa format manual
+- Edit profil self-service
 
-### 🔧 **9. Verifikasi & Login Mudah**
+### Manajemen Konten Dinamis
 
-- **Login cuma pakai nomor HP** - tidak perlu ID mitra rumit yang sering terlupakan
-- **Google Login** - Atau login menggunakan akun google (mengurangi penggunaan OTP dan tetap aman)
-- **Ganti PIN mudah** - tidak perlu kirim format manual
-- **Edit profil sendiri** - tidak perlu hubungi admin, ubah alamat, nama toko, nama pribadi langsung dari aplikasi.
+- Artikel yang dapat diedit (syarat dan ketentuan, panduan penggunaan)
+- Menu bantuan lengkap (FAQ, tutorial)
+- Penyisipan konten dinamis sebelum menu
 
-### 📄 **10. Konten Bisa Diubah**
+### Sistem Poin & Reward
 
-- **Artikel bisa diedit** - syarat ketentuan, cara pakai, dll
-- **Menu bantuan lengkap** - halaman Menu Bantuan, FAQ, tutorial tersedian untuk ditambah.
-- **Konten dinamis** - admin bisa update kapan saja bisa disisipkan sebelum menu, seperti syarat ketentuan penggunaan transfer bank, (bukan di letak di deskripsi menu).
+- Kurs penukaran poin transaksi yang dapat dikonfigurasi
+- Penukaran poin untuk reward atau saldo
 
-### 🎁 **11. Sistem Poin & Hadiah**
+### Self-Hosted Server
 
-- **Poin Transaksi Bisa dirubah kursnya** - Poin per rupiah bisa dirubah
-- **Tukar poin jadi hadiah atau saldo** - pulsa gratis, saldo, atau hadiah fisik
+- Kontrol sistem yang lengkap
+- Tidak perlu sewa VPS/Data Center tambahan
 
-### 🏢 **12. Self-Hosted Server**
+### Sistem Cache Redis
 
-- **Kontrol penuh atas sistem** - tidak perlu sewa VPS/Data Center tambahan
+- Response time ultra cepat (peningkatan dari 250ms ke 2ms)
+- Sinkronisasi cache real-time dengan SQL Server triggers
+- Mengurangi beban SQL Server
+- Caching dengan single Redis instance
+- Invalidasi cache yang intelligent
+- Performa yang dioptimalkan memory
 
-### ⚡ **13. Redis Centralized Cache System**
+## Keunggulan
 
-- **Response time ultra cepat** - GET requests berkurang yang dari 250ms bisa menjadi 2ms dengan Redis cache in-memory
-- **Sinkronisasi real-time** - Cache otomatis update ketika data SQL Server berubah dengan Table Trigger
-- **Mengurangi beban SQL Server** - Client requests dilayani dari Redis, melindungi performa database
-- **Caching terpusat** - Single Redis instance melayani semua application nodes
-- **Intelligent cache invalidation** - Smart cache refresh memastikan konsistensi data
-- **Performa memory-optimized** - Redis in-memory storage memberikan data retrieval yang sangat cepat
+### Teknologi Canggih
 
-## ✅ **Keuntungan Memilih Hexaflate**
+- Flutter untuk performa native yang smooth
+- Backend Rust untuk keamanan dan stabilitas maksimal
+- Deployment containerized untuk maintenance yang mudah
 
-### 🚀 **Teknologi Terdepan**
+### Kontrol Penuh
 
-- **Flutter** untuk performa native yang smooth
-- **Rust backend** untuk keamanan dan stabilitas maksimal
-- **Containerized deployment** untuk kemudahan maintenance
+- Self-hosted server dengan kontrol server total
+- Kustomisasi real-time tanpa update aplikasi
 
-### 🎛️ **Kontrol Penuh**
+### Skalabilitas
 
-- **Self-hosted server** dengan kontrol total server anda
-- **Real-time customization** ubah menu & layout tanpa update aplikasi
+- Sinkronisasi real-time tanpa replikasi database Otomax
+- Data selalu up-to-date tanpa masalah sinkronisasi
 
-### 📈 **Skalabilitas**
+## Kontak
 
-- **Real-time synchronization** tanpa replika database otomax, sehingga data selalu real time; tidak ada kendala synchronization.
-
----
-
-## 🏁 **Penutup**
-
-**Hexaflate** adalah solusi lengkap untuk transformasi digital sistem Otomax Anda. Dengan teknologi terdepan, keamanan maksimal, dan fleksibilitas biaya yang tinggi, kami siap mendukung pertumbuhan bisnis Anda.
-
-### 🎯 **Mulai Sekarang**
-
-Pilih kebutuhan bisnis Anda dan mulai transformasi digital bersama Hexaflate. Tim kami siap membantu dengan simulasi, perbandingan, atau draft kontrak.
-
----
-
-## **Kontak untuk Demo / Bantuan**
-
-Jika membutuhkan **demo**, **installasi bantuan**, atau **custom app build**, silakan hubungi:
+Untuk demo, bantuan instalasi, atau custom app builds:
 
 - **Telegram/WhatsApp:** +6285128074595
 - **Website:** [https://hexaflate.com/](https://hexaflate.com)
 
-**Hormat kami,**  
-**Tim Hexaflate**  
-_Revolusi Digital Otomax_
+## Lisensi
+
+Proyek ini adalah software proprietary yang dikembangkan oleh tim Hexaflate.
