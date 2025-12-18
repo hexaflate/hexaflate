@@ -1,4 +1,5 @@
 ![otomax v hexaflate](https://github.com/user-attachments/assets/11599fa7-2ba9-4642-9fe9-77f480b9562a)
+
 # Hexaflate
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
@@ -152,4 +153,4 @@ Untuk demo, bantuan instalasi, atau custom app builds:
 
 ## Lisensi
 
-Proyek ini adalah software proprietary yang dikembangkan oleh tim Hexaflate.
+Projek ini adalah software proprietary yang dikembangkan oleh tim Hexaflate.
