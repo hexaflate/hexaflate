@@ -1,5 +1,4 @@
-<img width="1260" height="484" alt="hexflate v otomax" src="https://github.com/user-attachments/assets/ca779f90-22c7-4e63-9e04-5698d9006d8e" />
-
+![otomax v hexaflate](https://github.com/user-attachments/assets/11599fa7-2ba9-4642-9fe9-77f480b9562a)
 # Hexaflate
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
