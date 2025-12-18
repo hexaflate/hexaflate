@@ -103,6 +103,15 @@ Untuk panduan lengkap instalasi backend, silakan kunjungi: [Hexaflate Install Wi
 
 - **Kontrol penuh atas sistem** - tidak perlu sewa VPS/Data Center tambahan
 
+### ⚡ **13. Redis Centralized Cache System**
+
+- **Response time ultra cepat** - GET requests berkurang yang dari 250ms bisa menjadi 2ms dengan Redis cache in-memory
+- **Sinkronisasi real-time** - Cache otomatis update ketika data SQL Server berubah dengan Table Trigger
+- **Mengurangi beban SQL Server** - Client requests dilayani dari Redis, melindungi performa database
+- **Caching terpusat** - Single Redis instance melayani semua application nodes
+- **Intelligent cache invalidation** - Smart cache refresh memastikan konsistensi data
+- **Performa memory-optimized** - Redis in-memory storage memberikan data retrieval yang sangat cepat
+
 ## ✅ **Keuntungan Memilih Hexaflate**
 
 ### 🚀 **Teknologi Terdepan**
