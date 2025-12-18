@@ -84,6 +84,7 @@ Untuk panduan lengkap instalasi backend, silakan kunjungi: [Hexaflate Install Wi
 ### 🔧 **9. Verifikasi & Login Mudah**
 
 - **Login cuma pakai nomor HP** - tidak perlu ID mitra rumit yang sering terlupakan
+- **Google Login** - Atau login menggunakan akun google (mengurangi penggunaan OTP dan tetap aman)
 - **Ganti PIN mudah** - tidak perlu kirim format manual
 - **Edit profil sendiri** - tidak perlu hubungi admin, ubah alamat, nama toko, nama pribadi langsung dari aplikasi.
 
