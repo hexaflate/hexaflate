@@ -1,4 +1,6 @@
-<img width="1260" height="484" alt="hexflate v otomax" src="https://github.com/user-attachments/assets/b0d8fb3a-ae18-49c5-a345-518e63effc2f" />
+<img width="1260" height="484" alt="hexflate v otomax" src="https://github.com/user-attachments/assets/ca779f90-22c7-4e63-9e04-5698d9006d8e" />
+
+# Hexaflate
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org)
@@ -7,8 +9,6 @@
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
 [![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-lightgrey?style=for-the-badge)](https://flutter.dev)
-
-# Hexaflate
 
 Solusi aplikasi mobile untuk sistem Otomax yang dibangun dengan Flutter dan Rust.
 
