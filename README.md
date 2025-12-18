@@ -1,5 +1,7 @@
 # Hexaflate
 
+<img width="1260" height="484" alt="hexflate v otomax" src="https://github.com/user-attachments/assets/b0d8fb3a-ae18-49c5-a345-518e63effc2f" />
+
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org)
 [![Axum](https://img.shields.io/badge/Axum-000000?style=for-the-badge&logo=rust&logoColor=white)](https://github.com/tokio-rs/axum)
