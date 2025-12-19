@@ -1,5 +1,4 @@
-![otomax v hexaflate](https://github.com/user-attachments/assets/11599fa7-2ba9-4642-9fe9-77f480b9562a)
-
+![image](https://firebasestorage.googleapis.com/v0/b/hexcate-mother-base.firebasestorage.app/o/assets%2F1766085732833-528046574-11599fa7-2ba9-4642-9fe9-77f480b9562a.png?alt=media&token=77f9b71c-4be0-413c-946e-6abf873caa85)
 # Hexaflate
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
@@ -14,143 +13,162 @@ Solusi aplikasi mobile untuk sistem Otomax yang dibangun dengan Flutter dan Rust
 
 ## Tentang
 
-Hexaflate adalah aplikasi mobile berbasis Flutter yang dirancang untuk sistem Otomax. Aplikasi ini dibangun agar ringan, cepat, dan mudah digunakan.
+Hexaflate adalah aplikasi mobile untuk sistem Otomax yang dibangun dengan Flutter (frontend) dan Rust-Axum (backend). Aplikasi ini dirancang untuk memberikan pengalaman modern seperti aplikasi e-wallet dengan keamanan tinggi dan performa optimal.
+
+---
 
 ## Tech Stack
 
-- **Frontend**: Flutter (Cross-platform mobile app)
-- **Backend**: Rust-Axum (High-performance server)
-- **Database**: Self-hosted
-- **Deployment**: Containerized (Docker)
-- **Security**: Multi-layer authentication
+| Komponen | Teknologi |
+|----------|-----------|
+| Frontend | Flutter (iOS dan Android) |
+| Backend | Rust dengan framework Axum |
+| Cache | Redis |
+| Database | SQL Server (existing Otomax) |
+| Deployment | Docker Container |
 
-## Instalasi
+---
 
-Untuk panduan lengkap instalasi backend, kunjungi: [Hexaflate Install Wiki](https://github.com/hexaflate/hexaflate/wiki)
+## Fitur Utama
 
-## Fitur
+### Keamanan
 
-### Security
-
-- Autentikasi biometric (fingerprint atau face recognition dengan PIN fallback)
-- Verifikasi PIN transaksi untuk setiap transaksi
+- Autentikasi biometrik (fingerprint/face recognition) dengan PIN fallback
+- Verifikasi PIN untuk setiap transaksi
 - Verifikasi identitas dengan KTP dan selfie
-- Batas transaksi berbasis session untuk login baru
+- Batas transaksi untuk session login baru
+- App Check untuk mencegah akses tidak sah
 
-### Aplikasi Modern
+### Aplikasi
 
-- Dibangun khusus untuk sistem bisnis Otomax
-- UI/UX modern mirip aplikasi e-wallet populer
-- Update real-time tanpa replikasi database
-- Material Design untuk navigasi yang intuitif
+- UI/UX modern mirip aplikasi e-wallet
+- Material Design untuk navigasi intuitif
+- Dark mode support
+- Animasi smooth
+- Real-time update tanpa replikasi database
 
-### Fitur Fokus Agen
+### Fitur Agen
 
-- Pengecekan detail customer opsional
-- Receipt digital otomatis (dapat dibagikan dan dicetak)
-- Riwayat transaksi yang jelas (mengecualikan produk cek Rp. 0)
-- Sembunyikan produk harga nol dari daftar produk
+- Pengecekan detail customer (opsional)
+- Receipt digital otomatis (share dan print)
+- Riwayat transaksi yang jelas
 - Sistem polling transaksi real-time
 - Registrasi agen langsung via aplikasi
-- Sistem multi-referral code (hingga 5 kode per agen)
+- Multi-referral code (hingga 5 kode per agen)
 - Menu transfer saldo terpadu
 - Monitoring performa agen
 
 ### Pencegahan Fraud
 
-- Mode verifikasi dengan KTP dan selfie
+- Mode verifikasi KTP dan selfie
 - Proteksi keagenan (hanya member terverifikasi yang dapat mendaftarkan agen)
 - Batas transaksi session baru
-- Penandaan session aman untuk mengangkat pembatasan akun
+- Penandaan session aman
 
-### Kustomisasi Lengkap
+### Kustomisasi
 
 - Panel admin untuk perubahan menu, tampilan, dan fitur
-- Posisi widget yang fleksibel
+- Posisi widget fleksibel
 - Banner dinamis untuk promosi
-- Widget Cards untuk membuat menu dalam bentuk kartu
+- Widget Cards untuk menu dalam bentuk kartu
 - Pengaturan tampilan personal (warna, logo, header, navigasi)
-- Layout submenu yang bervariasi (list, grid, bottom sheet)
-- Notifikasi canggih dengan dukungan gambar dan URL
+- Layout submenu bervariasi (list, grid, bottom sheet)
+- Notifikasi dengan dukungan gambar dan URL
 
-### Dukungan Multi-Device
+### Multi-Device
 
-- Satu akun, multiple devices
+- Satu akun untuk multiple devices
 - Sinkronisasi otomatis di semua perangkat
 - Tidak ada batasan jumlah device
 
-### Customer Chat Service (Add-on Opsional)
+### Customer Chat (Add-on Opsional)
 
 - Chat langsung dengan admin melalui web panel
-- Notifikasi terorganisir (admin, transaksi, pesan deposit)
+- Notifikasi terorganisir (admin, transaksi, deposit)
 - Firebase Cloud Messaging untuk notifikasi real-time
-- Interface percakapan sederhana dengan dukungan media
+- Interface chat dengan dukungan media
 - Instant messaging via WebSocket
 
-### Interface Modern
+### Login
 
-- Dukungan dark mode
-- Tampilan aplikasi modern
-- Navigasi intuitif dengan Material Design
-- Animasi halus premium
-
-### Verifikasi & Login Mudah
-
-- Login hanya dengan nomor telepon
-- Opsi Google Login
+- Login dengan nomor telepon
+- Google Login (opsional)
 - Perubahan PIN mudah tanpa format manual
 - Edit profil self-service
 
-### Manajemen Konten Dinamis
+### Konten Dinamis
 
-- Artikel yang dapat diedit (syarat dan ketentuan, panduan penggunaan)
+- Artikel yang dapat diedit (syarat ketentuan, panduan)
 - Menu bantuan lengkap (FAQ, tutorial)
 - Penyisipan konten dinamis sebelum menu
 
-### Sistem Poin & Reward
+### Sistem Poin
 
-- Kurs penukaran poin transaksi yang dapat dikonfigurasi
+- Kurs penukaran poin yang dapat dikonfigurasi
 - Penukaran poin untuk reward atau saldo
 
-### Self-Hosted Server
+---
 
-- Kontrol sistem yang lengkap
-- Tidak perlu sewa VPS/Data Center tambahan
+## Keunggulan Teknis
 
-### Sistem Cache Redis
+### Performa Cache Redis
 
-- Response time ultra cepat (peningkatan dari 250ms ke 2ms)
+Response time meningkat drastis dari 250ms menjadi 2ms dengan sistem cache Redis:
+
 - Sinkronisasi cache real-time dengan SQL Server triggers
 - Mengurangi beban SQL Server
-- Caching dengan single Redis instance
 - Invalidasi cache yang intelligent
-- Performa yang dioptimalkan memory
+- Optimasi memory
 
-## Keunggulan
+### Self-Hosted
 
-### Teknologi Canggih
-
-- Flutter untuk performa native yang smooth
-- Backend Rust untuk keamanan dan stabilitas maksimal
-- Deployment containerized untuk maintenance yang mudah
-
-### Kontrol Penuh
-
-- Self-hosted server dengan kontrol server total
-- Kustomisasi real-time tanpa update aplikasi
+- Kontrol penuh atas sistem
+- Tidak perlu sewa VPS tambahan
+- Data tetap di server Anda
 
 ### Skalabilitas
 
-- Sinkronisasi real-time tanpa replikasi database Otomax
-- Data selalu up-to-date tanpa masalah sinkronisasi
+- Real-time sync tanpa replikasi database Otomax
+- Data selalu up-to-date
+- Support multi-cluster dengan shared storage
+
+---
+
+## Arsitektur Sistem
+
+```bash
+[Aplikasi Flutter] <---> [Backend Rust-Axum] <---> [Redis Cache]
+                                |
+                                v
+                         [SQL Server Otomax]
+```
+
+Backend Hexaflate berjalan sebagai Docker container yang terhubung ke:
+- SQL Server Otomax (database existing)
+- Redis (cache dan session)
+- Firebase (notifikasi dan autentikasi)
+
+---
+
+## Memulai
+
+Untuk memulai setup Hexaflate, ikuti panduan berikut secara berurutan:
+
+1. [Panduan Setup Redis](Panduan-Setup-Redis-Docker-Container)
+2. [Panduan Setup Backend](Panduan-Setup-Backend-Hexaflate)
+3. [Panduan Build Aplikasi](Panduan-Build-Aplikasi-Hexaflate)
+
+---
 
 ## Kontak
 
 Untuk demo, bantuan instalasi, atau custom app builds:
 
-- **Telegram/WhatsApp:** +6285128074595
-- **Website:** [https://hexaflate.com/](https://hexaflate.com)
+- Telegram/WhatsApp: +6285128074595
+- Website: [hexaflate.com](https://hexaflate.com)
+
+---
 
 ## Lisensi
 
-Projek ini adalah software proprietary yang dikembangkan oleh tim Hexaflate.
+Hexaflate adalah software proprietary yang dikembangkan oleh tim Hexaflate.
