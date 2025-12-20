@@ -1,4 +1,5 @@
 ![image](https://firebasestorage.googleapis.com/v0/b/hexcate-mother-base.firebasestorage.app/o/assets%2F1766085732833-528046574-11599fa7-2ba9-4642-9fe9-77f480b9562a.png?alt=media&token=77f9b71c-4be0-413c-946e-6abf873caa85)
+
 # Hexaflate
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
@@ -19,13 +20,13 @@ Hexaflate adalah aplikasi mobile untuk sistem Otomax yang dibangun dengan Flutte
 
 ## Tech Stack
 
-| Komponen | Teknologi |
-|----------|-----------|
-| Frontend | Flutter (iOS dan Android) |
-| Backend | Rust dengan framework Axum |
-| Cache | Redis |
-| Database | SQL Server (existing Otomax) |
-| Deployment | Docker Container |
+| Komponen   | Teknologi                    |
+| ---------- | ---------------------------- |
+| Frontend   | Flutter (iOS dan Android)    |
+| Backend    | Rust dengan framework Axum   |
+| Cache      | Redis                        |
+| Database   | SQL Server (existing Otomax) |
+| Deployment | Docker Container             |
 
 ---
 
@@ -92,7 +93,7 @@ Hexaflate adalah aplikasi mobile untuk sistem Otomax yang dibangun dengan Flutte
 ### Login
 
 - Login dengan nomor telepon
-- Google Login (opsional)
+- Google & Facebook Login (opsional)
 - Perubahan PIN mudah tanpa format manual
 - Edit profil self-service
 
@@ -144,6 +145,7 @@ Response time meningkat drastis dari 250ms menjadi 2ms dengan sistem cache Redis
 ```
 
 Backend Hexaflate berjalan sebagai Docker container yang terhubung ke:
+
 - SQL Server Otomax (database existing)
 - Redis (cache dan session)
 - Firebase (notifikasi dan autentikasi)
