@@ -152,7 +152,7 @@ Backend Hexaflate berjalan sebagai Docker container yang terhubung ke:
 
 ---
 
-## Memulai
+## Mulai
 
 Untuk memulai setup Hexaflate, ikuti panduan berikut secara berurutan:
 
