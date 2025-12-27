@@ -1,0 +1,98 @@
+name: Tenant Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      github_token:
+        description: 'Tenant GitHub token'
+        required: true
+        type: string
+      target_owner:
+        description: 'Target repository owner'
+        required: true
+        type: string
+      target_repo:
+        description: 'Target repository name'
+        required: true
+        type: string
+      api_endpoints:
+        description: 'API endpoints JSON array'
+        required: true
+        type: string
+      x_token_value:
+        description: 'X-Token value'
+        required: true
+        type: string
+      ws_backend_host:
+        description: 'WebSocket backend host'
+        required: true
+        type: string
+      web_title:
+        description: 'Web title'
+        required: true
+        type: string
+      web_favicon_url:
+        description: 'Favicon URL'
+        required: true
+        type: string
+      theme_color:
+        description: 'Primary theme color'
+        required: true
+        type: string
+      theme_color_light:
+        description: 'Light theme color'
+        required: true
+        type: string
+      custom_domain:
+        description: 'Custom domain for CNAME'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mask sensitive inputs
+        run: |
+          echo "::add-mask::${{ inputs.github_token }}"
+          echo "::add-mask::${{ inputs.x_token_value }}"
+
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          VITE_API_ENDPOINTS=${{ inputs.api_endpoints }}
+          VITE_X_TOKEN_VALUE=${{ inputs.x_token_value }}
+          VITE_WS_BACKEND_HOST=${{ inputs.ws_backend_host }}
+          VITE_WEB_TITLE=${{ inputs.web_title }}
+          VITE_WEB_FAVICON=${{ inputs.web_favicon_url }}
+          VITE_WEBREPORT_THEME_COLOR=${{ inputs.theme_color }}
+          VITE_WEBREPORT_THEME_COLOR_LIGHT=${{ inputs.theme_color_light }}
+          EOF
+
+      - name: Build
+        run: npm run build
+
+      - name: Create CNAME if custom domain
+        if: inputs.custom_domain != ''
+        run: echo "${{ inputs.custom_domain }}" > dist/CNAME
+
+      - name: Deploy to tenant repository
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ inputs.github_token }}
+          external_repository: ${{ inputs.target_owner }}/${{ inputs.target_repo }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
