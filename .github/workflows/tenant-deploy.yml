@@ -74,15 +74,15 @@ jobs:
         run: |
           # Convert JSON array to comma-separated string
           API_ENDPOINTS=$(echo '${{ inputs.api_endpoints }}' | jq -r 'join(",")')
-          cat > .env << EOF
-          VITE_API_ENDPOINTS=${API_ENDPOINTS}
-          VITE_X_TOKEN_VALUE=${{ inputs.x_token_value }}
-          VITE_WS_BACKEND_HOST=${{ inputs.ws_backend_host }}
-          VITE_WEB_TITLE=${{ inputs.web_title }}
-          VITE_WEB_FAVICON=${{ inputs.web_favicon_url }}
-          VITE_WEBREPORT_THEME_COLOR=${{ inputs.theme_color }}
-          VITE_WEBREPORT_THEME_COLOR_LIGHT=${{ inputs.theme_color_light }}
-          EOF
+          {
+            echo "VITE_API_ENDPOINTS=${API_ENDPOINTS}"
+            echo "VITE_X_TOKEN_VALUE=${{ inputs.x_token_value }}"
+            echo "VITE_WS_BACKEND_HOST=${{ inputs.ws_backend_host }}"
+            echo "VITE_WEB_TITLE=${{ inputs.web_title }}"
+            echo "VITE_WEB_FAVICON=${{ inputs.web_favicon_url }}"
+            echo 'VITE_WEBREPORT_THEME_COLOR="${{ inputs.theme_color }}"'
+            echo 'VITE_WEBREPORT_THEME_COLOR_LIGHT="${{ inputs.theme_color_light }}"'
+          } > .env
 
       - name: Build
         run: npm run build
