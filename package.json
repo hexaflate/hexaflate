@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp dist/index.html dist/404.html",
+    "build:win": "vite build && copy dist\\index.html dist\\404.html",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
