@@ -1,6 +1,6 @@
 // ./src/config/api.ts
 
-import { domainConfig } from './domainConfig';
+import { domainConfig } from "./domainConfig";
 
 // API endpoints (split if multiple provided)
 const API_ENDPOINTS = (domainConfig.apiEndpoints || "")
@@ -28,11 +28,10 @@ export function onUnauthorized(callback: UnauthorizedCallback): () => void {
  * Trigger all registered unauthorized callbacks
  */
 export function triggerUnauthorized(): void {
-  unauthorizedCallbacks.forEach(callback => {
+  unauthorizedCallbacks.forEach((callback) => {
     try {
       callback();
-    } catch (error) {
-    }
+    } catch (error) {}
   });
 }
 
@@ -98,7 +97,7 @@ export async function getApiEndpoint(): Promise<string> {
     const fallbackEndpoint = API_ENDPOINTS[0] || "";
     cachedEndpoint = fallbackEndpoint;
 
-    // Only log once to avoid console spam
+    // Only log once to avoid spam
     if (!hasLoggedEndpointFailure) {
       hasLoggedEndpointFailure = true;
     }
@@ -143,7 +142,9 @@ export async function apiRequest(
   // Create abort controller for timeout if no signal is provided
   const userSignal = options.signal;
   const controller = userSignal ? null : new AbortController();
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 8000) : null; // 8 second timeout
+  const timeoutId = controller
+    ? setTimeout(() => controller.abort(), 8000)
+    : null; // 8 second timeout
 
   // Extract headers and body from options to merge properly
   const { headers: optionsHeaders, body, ...restOptions } = options;
@@ -194,7 +195,7 @@ export async function apiRequest(
       // Retry on 5xx errors (server errors) but not on 4xx (client errors)
       if (response.status >= 500 && attempt < retries) {
         const delay = Math.min(1000 * Math.pow(2, attempt), 3000); // Exponential backoff, max 3s
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
 
@@ -203,7 +204,7 @@ export async function apiRequest(
       lastError = error as Error;
 
       // Don't retry on abort errors (timeouts/user cancellation)
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         if (timeoutId) clearTimeout(timeoutId);
         throw error;
       }
@@ -211,14 +212,14 @@ export async function apiRequest(
       // Retry on network errors
       if (attempt < retries) {
         const delay = Math.min(1000 * Math.pow(2, attempt), 3000);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
     }
   }
 
   if (timeoutId) clearTimeout(timeoutId);
-  throw lastError || new Error('Request failed after retries');
+  throw lastError || new Error("Request failed after retries");
 }
 
 // Export the endpoints for reference

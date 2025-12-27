@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { THEME_COLOR, withOpacity } from "../../utils/themeColors";
 import { X_TOKEN_VALUE, getApiUrl } from "../../config/api";
+import { triggerConfigSync, CONFIG_TYPES } from "../../utils/configSyncTrigger";
 import ImageHoverPreview from "../ImageHoverPreview";
 import AssetsManager from "../AssetsManager";
 import {
@@ -549,6 +550,8 @@ const BantuanCustomizationEditor = forwardRef<BantuanCustomizationEditorRef, Ban
         },
         body: JSON.stringify({ config: newConfig }),
       });
+
+      triggerConfigSync(CONFIG_TYPES.BANTUAN);
     } catch (error) {
     } finally {
       setSaving(false);

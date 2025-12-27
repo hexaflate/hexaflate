@@ -18,7 +18,9 @@ import {
   ExternalLink,
   Image,
   Upload,
-  X
+  X,
+  Check,
+  Link2,
 } from 'lucide-react';
 import { getApiUrl, X_TOKEN_VALUE } from '../config/api';
 import { useToast } from './Toast';
@@ -38,6 +40,7 @@ export interface MarkdownEditorRef {
   saveCurrentFile: () => void;
   downloadMarkdown: () => void;
   backToFiles: () => void;
+  openLinkModal: () => void;
   currentFile: MarkdownFile | null;
   saving: boolean;
 }
@@ -73,6 +76,9 @@ const [files, setFiles] = useState<MarkdownFile[]>([]);
   const imageFileInputRef = useRef<HTMLInputElement>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<string | null>(null);
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [generatedLink, setGeneratedLink] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -82,6 +88,7 @@ const [files, setFiles] = useState<MarkdownFile[]>([]);
     saveCurrentFile,
     downloadMarkdown,
     backToFiles: handleBackToFiles,
+    openLinkModal: handleOpenLinkModal,
     currentFile,
     saving,
   }));
@@ -430,6 +437,37 @@ const [files, setFiles] = useState<MarkdownFile[]>([]);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const handleOpenLinkModal = () => {
+    if (!currentFile) {
+      showToast('Please select a file first', 'error');
+      return;
+    }
+    const link = `${window.location.origin}/content?file=${encodeURIComponent(currentFile.filename)}`;
+    setGeneratedLink(link);
+    setCopied(false);
+    setShowLinkModal(true);
+  };
+
+  const handleCopyLink = async () => {
+    if (!generatedLink) return;
+    try {
+      await navigator.clipboard.writeText(generatedLink);
+      setCopied(true);
+      showToast('Link copied!', 'success');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textArea = document.createElement('textarea');
+      textArea.value = generatedLink;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopied(true);
+      showToast('Link copied!', 'success');
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const copyRawUrl = (filename: string) => {
@@ -1198,6 +1236,49 @@ const [files, setFiles] = useState<MarkdownFile[]>([]);
         cancelText="Batal"
         variant="danger"
       />
+
+      {/* Generate Link Modal */}
+      {showLinkModal && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Rendered Content Link</h3>
+              <button
+                onClick={() => setShowLinkModal(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 rounded"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <p className="text-sm text-gray-600">
+                Share this link to view the rendered markdown content for <strong>{currentFile?.filename}</strong>
+              </p>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={generatedLink}
+                  readOnly
+                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm"
+                />
+                <button
+                  onClick={handleCopyLink}
+                  className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center space-x-1"
+                >
+                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </button>
+              </div>
+              <button
+                onClick={() => window.open(generatedLink, '_blank')}
+                className="w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center justify-center space-x-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                <span>Open Link</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 });

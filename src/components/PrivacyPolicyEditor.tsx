@@ -1,12 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
 import {
-  Save,
-  RefreshCw,
   Eye,
   Edit3,
-  FileText,
-  Download,
-  Upload,
   Bold,
   Italic,
   List,
@@ -16,6 +11,10 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  Link2,
+  Copy,
+  Check,
+  X,
 } from "lucide-react";
 import { getApiUrl, X_TOKEN_VALUE } from "../config/api";
 import { useToast } from "./Toast";
@@ -23,20 +22,25 @@ import {
   getCachedPrivacyPolicy,
   setCachedPrivacyPolicy,
 } from "../utils/privacyPolicyCache";
-import {
-  THEME_COLOR,
-  THEME_COLOR_DARK,
-  withOpacity,
-} from "../utils/themeColors";
+import { generatePrivacyPolicyLink } from "../utils/encryption";
 
 interface PrivacyPolicyEditorProps {
   authSeed: string;
   onNavigate: (screen: string) => void;
 }
 
-const PrivacyPolicyEditor: React.FC<PrivacyPolicyEditorProps> = ({
+export interface PrivacyPolicyEditorRef {
+  save: () => Promise<void>;
+  refresh: () => void;
+  download: () => void;
+  uploadFile: () => void;
+  openLinkModal: () => void;
+  saving: boolean;
+}
+
+const PrivacyPolicyEditor = forwardRef<PrivacyPolicyEditorRef, PrivacyPolicyEditorProps>(({
   authSeed,
-}) => {
+}, ref) => {
   const { showToast } = useToast();
   const [content, setContent] = useState<string>("");
   const [saving, setSaving] = useState(false);
@@ -44,6 +48,21 @@ const PrivacyPolicyEditor: React.FC<PrivacyPolicyEditorProps> = ({
   const [showToolbar] = useState(true);
   const [fontSize, setFontSize] = useState(14);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [appName, setAppName] = useState("");
+  const [generatedLink, setGeneratedLink] = useState("");
+  const [copied, setCopied] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  // Expose methods to parent via ref
+  useImperativeHandle(ref, () => ({
+    save: savePrivacyPolicy,
+    refresh: () => loadPrivacyPolicy(false),
+    download: downloadMarkdown,
+    uploadFile: () => fileInputRef.current?.click(),
+    openLinkModal,
+    saving,
+  }));
 
   const loadPrivacyPolicy = useCallback(
     async (background = false) => {
@@ -230,7 +249,7 @@ const PrivacyPolicyEditor: React.FC<PrivacyPolicyEditorProps> = ({
     // Process tables first (before other transformations)
     let processedContent = content.replace(
       /^(\|.+\|)\r?\n(\|[-:| ]+\|)\r?\n((?:\|.+\|\r?\n?)+)/gm,
-      (match, headerRow, separatorRow, bodyRows) => {
+      (_match, headerRow, separatorRow, bodyRows) => {
         const headers = headerRow
           .split("|")
           .filter((cell: string) => cell.trim() !== "")
@@ -376,71 +395,52 @@ const PrivacyPolicyEditor: React.FC<PrivacyPolicyEditorProps> = ({
     return { __html: html };
   };
 
+  const handleGenerateLink = () => {
+    if (!appName.trim()) {
+      showToast("Please enter an app name", "error");
+      return;
+    }
+    const link = generatePrivacyPolicyLink(appName.trim());
+    setGeneratedLink(link);
+  };
+
+  const handleCopyLink = async () => {
+    if (!generatedLink) return;
+    try {
+      await navigator.clipboard.writeText(generatedLink);
+      setCopied(true);
+      showToast("Link copied!", "success");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textArea = document.createElement("textarea");
+      textArea.value = generatedLink;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      setCopied(true);
+      showToast("Link copied!", "success");
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const openLinkModal = () => {
+    setAppName("");
+    setGeneratedLink("");
+    setCopied(false);
+    setShowLinkModal(true);
+  };
+
   return (
     <div className="h-full bg-gray-50 flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
-        <div className="px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-6 w-6 text-primary-600" />
-                <h1 className="text-xl font-semibold text-gray-900">
-                  Privacy Policy
-                </h1>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="file"
-                  accept=".md,.txt"
-                  onChange={uploadMarkdown}
-                  className="hidden"
-                  id="upload-markdown"
-                />
-                <label
-                  htmlFor="upload-markdown"
-                  className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 cursor-pointer flex items-center space-x-2"
-                >
-                  <Upload className="h-4 w-4" />
-                  <span>Upload</span>
-                </label>
-              </div>
-
-              <button
-                onClick={downloadMarkdown}
-                className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center space-x-2"
-              >
-                <Download className="h-4 w-4" />
-                <span>Download</span>
-              </button>
-
-              <button
-                onClick={() => loadPrivacyPolicy(false)}
-                className="px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center space-x-2"
-              >
-                <RefreshCw className="h-4 w-4" />
-                <span>Refresh</span>
-              </button>
-
-              <button
-                onClick={savePrivacyPolicy}
-                disabled={saving}
-                className="px-4 py-2 text-sm bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 flex items-center space-x-2"
-              >
-                {saving ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                ) : (
-                  <Save className="h-4 w-4" />
-                )}
-                <span>{saving ? "Saving..." : "Save"}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Hidden file input for upload */}
+      <input
+        type="file"
+        accept=".md,.txt"
+        onChange={uploadMarkdown}
+        className="hidden"
+        ref={fileInputRef}
+      />
 
       {/* Toolbar */}
       {showToolbar && (
@@ -617,8 +617,75 @@ const PrivacyPolicyEditor: React.FC<PrivacyPolicyEditorProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Generate Link Modal */}
+      {showLinkModal && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Generate Privacy Policy Link</h3>
+              <button
+                onClick={() => setShowLinkModal(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 rounded"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  App Name
+                </label>
+                <input
+                  type="text"
+                  value={appName}
+                  onChange={(e) => setAppName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleGenerateLink()}
+                  placeholder="Enter app name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  autoFocus
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Tambahkan nama app di sini untuk merubah [[app_name]] 
+                </p>
+              </div>
+
+              <button
+                onClick={handleGenerateLink}
+                disabled={!appName.trim()}
+                className="w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              >
+                <Link2 className="h-4 w-4" />
+                <span>Generate Link</span>
+              </button>
+
+              {generatedLink && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Generated Link
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={generatedLink}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm"
+                    />
+                    <button
+                      onClick={handleCopyLink}
+                      className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center space-x-1"
+                    >
+                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
+});
 
 export default PrivacyPolicyEditor;

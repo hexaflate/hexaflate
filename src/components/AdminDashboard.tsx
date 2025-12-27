@@ -31,11 +31,11 @@ import {
   RefreshCw,
   XCircle,
   Eye,
-  EyeOff,
   Filter,
   Save,
   ArrowLeft,
   FilePlus,
+  Link2,
 } from "lucide-react";
 import { DynamicScreenConfig } from "../types";
 import { SAMPLE_CONFIG } from "../data/sampleConfig";
@@ -50,7 +50,7 @@ import AnalyticsDashboard, {
 } from "./AnalyticsDashboard";
 import SystemLogs, { SystemLogsRef } from "./SystemLogs";
 import SystemSettings, { SystemSettingsRef } from "./SystemSettings";
-import PrivacyPolicyEditor from "./PrivacyPolicyEditor";
+import PrivacyPolicyEditor, { PrivacyPolicyEditorRef } from "./PrivacyPolicyEditor";
 import FeedbackViewer, { FeedbackViewerRef } from "./FeedbackViewer";
 import SecurityManagement from "./SecurityManagement";
 import HadiahManagement, { HadiahManagementRef } from "./HadiahManagement";
@@ -95,6 +95,7 @@ import {
   SIDEBAR_BG_TO,
   withOpacity,
 } from "../utils/themeColors";
+import { triggerConfigSync, CONFIG_TYPES } from "../utils/configSyncTrigger";
 
 interface AdminDashboardProps {
   authSeed: string;
@@ -197,14 +198,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Member management ref
   const memberManagementRef = useRef<MemberManagementRef>(null);
-  const [memberStats, setMemberStats] = useState<{
+  const [, setMemberStats] = useState<{
     total: number;
     loaded: number;
   } | null>(null);
 
   // Transaction management ref
   const transactionManagementRef = useRef<TransactionManagementRef>(null);
-  const [transactionAnalytics, setTransactionAnalytics] = useState<{
+  const [, setTransactionAnalytics] = useState<{
     total_today: number;
     success_count: number;
     process_count: number;
@@ -222,6 +223,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [chatConnectionStatus, setChatConnectionStatus] =
     useState<string>("disconnected");
   const [chatUnreadCount, setChatUnreadCount] = useState<number>(0);
+
+  // Suppress unused variable warning - used for WebSocket connection
+  void chatConnectionStatus;
 
   // Global chat WebSocket for notifications even when chat screen is not active
   const handleChatConversationUpdate = (conversations: any[]) => {
@@ -243,6 +247,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     handleChatConversationUpdate,
   );
 
+  // Suppress unused variable warning - WebSocket is used for side effects
+  void globalChatWebSocket;
+
   // Analytics dashboard ref
   const analyticsDashboardRef = useRef<AnalyticsDashboardRef>(null);
 
@@ -251,28 +258,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Session manager ref
   const sessionManagerRef = useRef<SessionManagerRef>(null);
-  const [sessionStats, setSessionStats] = useState<{
+  const [, setSessionStats] = useState<{
     total: number;
     displayed: number;
   } | null>(null);
 
   // Hadiah management stats
-  const [hadiahStats, setHadiahStats] = useState<{ total: number } | null>(
+  const [, setHadiahStats] = useState<{ total: number } | null>(
     null,
   );
 
   // Promo management stats
-  const [promoStats, setPromoStats] = useState<{ total: number } | null>(null);
+  const [, setPromoStats] = useState<{ total: number } | null>(null);
 
   // Feedback viewer ref
   const feedbackViewerRef = useRef<FeedbackViewerRef>(null);
-  const [feedbackStats, setFeedbackStats] = useState<{ total: number } | null>(
+  const [, setFeedbackStats] = useState<{ total: number } | null>(
     null,
   );
 
   // System logs ref
   const systemLogsRef = useRef<SystemLogsRef>(null);
-  const [systemLogsStats, setSystemLogsStats] = useState<{
+  const [, setSystemLogsStats] = useState<{
     total: number;
   } | null>(null);
 
@@ -282,12 +289,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     filename: string;
   } | null>(null);
 
+  // Privacy policy editor ref
+  const privacyPolicyEditorRef = useRef<PrivacyPolicyEditorRef>(null);
+
   // Chat license status
   const [chatLicenseStatus, setChatLicenseStatus] = useState<{
     is_licensed: boolean;
     server_name: string;
   } | null>(null);
-  const [chatLicenseLoading, setChatLicenseLoading] = useState(true);
+  const [, setChatLicenseLoading] = useState(true);
 
   // Alert dialog state for JSON import
   const [showJsonInvalidAlert, setShowJsonInvalidAlert] = useState(false);
@@ -341,7 +351,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       fetchCurrentAdminInfo(),
       loadAvailableMenus(),
       loadChatLicenseStatus(),
-    ]).catch((error) => {
+    ]).catch(() => {
     });
 
     // Lazy load other data only when section is accessed
@@ -1324,6 +1334,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         } catch (bantuanErr) {
         }
 
+        // Trigger config sync to notify mobile apps about home screen changes
+        triggerConfigSync(CONFIG_TYPES.HOME_SCREEN);
+
         showToast(
           `Menu "${selectedMenu || "Aplikasi Utama"}" berhasil dipublikasikan!`,
           "success",
@@ -1729,6 +1742,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <PrivacyPolicyEditor
           authSeed={authSeed}
           onNavigate={setActiveSection}
+          ref={privacyPolicyEditorRef}
         />
       ),
     },
@@ -2783,6 +2797,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </button>
                         <button
                           onClick={() =>
+                            markdownEditorRef.current?.openLinkModal()
+                          }
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors backdrop-blur-sm"
+                        >
+                          <Link2 className="h-3.5 w-3.5" />
+                          <span>Generate Link</span>
+                        </button>
+                        <button
+                          onClick={() =>
                             markdownEditorRef.current?.saveCurrentFile()
                           }
                           disabled={markdownEditorRef.current?.saving}
@@ -2832,6 +2855,58 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         </button>
                       </>
                     )}
+                  </div>
+                )}
+
+                {/* Privacy Policy Buttons - Only show for privacy-policy section */}
+                {activeSection === "privacy-policy" && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => privacyPolicyEditorRef.current?.uploadFile()}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors backdrop-blur-sm"
+                    >
+                      <Upload className="h-3.5 w-3.5" />
+                      <span>Upload</span>
+                    </button>
+                    <button
+                      onClick={() => privacyPolicyEditorRef.current?.download()}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors backdrop-blur-sm"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      <span>Download</span>
+                    </button>
+                    <button
+                      onClick={() => privacyPolicyEditorRef.current?.refresh()}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors backdrop-blur-sm"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      <span>Refresh</span>
+                    </button>
+                    <button
+                      onClick={() => privacyPolicyEditorRef.current?.openLinkModal()}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white/90 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors backdrop-blur-sm"
+                    >
+                      <Link2 className="h-3.5 w-3.5" />
+                      <span>Generate Link</span>
+                    </button>
+                    <button
+                      onClick={() => privacyPolicyEditorRef.current?.save()}
+                      disabled={privacyPolicyEditorRef.current?.saving}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50 rounded-lg transition-colors backdrop-blur-sm"
+                      style={{
+                        backgroundColor: withOpacity(THEME_COLOR, 0.8),
+                        borderColor: withOpacity(THEME_COLOR_LIGHT, 0.4),
+                        borderWidth: "1px",
+                        borderStyle: "solid",
+                      }}
+                    >
+                      {privacyPolicyEditorRef.current?.saving ? (
+                        <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-white"></div>
+                      ) : (
+                        <Save className="h-3.5 w-3.5" />
+                      )}
+                      <span>Save</span>
+                    </button>
                   </div>
                 )}
               </div>
@@ -2913,8 +2988,8 @@ const DashboardOverview = forwardRef<
 
   const isMountedRef = useRef(true);
   const silentUpdateRef = useRef(false);
-  const timeoutRef = useRef<number | null>(null);
-  const intervalRef = useRef<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentApiResponseTimeRef = useRef<string>(initialApiResponseTime);
 
   useEffect(() => {

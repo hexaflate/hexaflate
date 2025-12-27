@@ -52,6 +52,7 @@ import {
   withOpacity,
   getActiveTabStyle,
 } from "../utils/themeColors";
+import { triggerConfigSync, CONFIG_TYPES } from "../utils/configSyncTrigger";
 
 // Dynamic type for any app rules
 type AppRules = Record<string, any>;
@@ -1375,6 +1376,8 @@ const SystemSettings = forwardRef<SystemSettingsRef, SystemSettingsProps>(
           const data = await response.json();
           if (data.success) {
             if (!silent) showToast("Receipt maps configuration saved successfully!", "success");
+            // Trigger config sync to notify mobile apps
+            triggerConfigSync(CONFIG_TYPES.RECEIPT_MAPS);
           } else {
             if (!silent) showToast(data.message || "Failed to save receipt maps configuration", "error");
           }
@@ -2221,6 +2224,8 @@ const SystemSettings = forwardRef<SystemSettingsRef, SystemSettingsProps>(
           const data = await response.json();
           if (data.success) {
             if (!silent) showToast(data.message || "Pengaturan berhasil disimpan!", "success");
+            // Trigger config sync to notify mobile apps
+            triggerConfigSync(CONFIG_TYPES.APP_RULES);
           } else {
             if (!silent) showToast(data.message || "Gagal menyimpan pengaturan", "error");
           }
@@ -2260,6 +2265,8 @@ const SystemSettings = forwardRef<SystemSettingsRef, SystemSettingsProps>(
           const data = await response.json();
           if (data.success) {
             if (!silent) showToast(data.message || "Konfigurasi info berhasil disimpan!", "success");
+            // Trigger config sync to notify mobile apps
+            triggerConfigSync(CONFIG_TYPES.INFO_CONFIG);
           } else {
             if (!silent) showToast(data.message || "Gagal menyimpan konfigurasi info", "error");
           }

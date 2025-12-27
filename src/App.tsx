@@ -4,6 +4,8 @@ import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 import MemberLogin from './components/MemberLogin';
 import WebReportDashboard from './components/WebReportDashboard';
+import PrivacyPolicyViewer from './components/PrivacyPolicyViewer';
+import MarkdownContentViewer from './components/MarkdownContentViewer';
 import { ToastProvider } from './components/Toast';
 import { injectThemeStyles } from './utils/themeColors';
 import { onUnauthorized } from './config/api';
@@ -133,6 +135,18 @@ function App() {
               <Navigate to="/login" replace />
             )
           } 
+        />
+
+        {/* Privacy Policy Route - Public */}
+        <Route 
+          path="/privacy-policy" 
+          element={<PrivacyPolicyViewer />}
+        />
+
+        {/* Markdown Content Route - Public */}
+        <Route 
+          path="/content" 
+          element={<MarkdownContentViewer />}
         />
 
         {/* Default Route - Redirect to login */}

@@ -12,6 +12,7 @@ import { X_TOKEN_VALUE, getApiUrl } from '../config/api';
 import { useToast } from './Toast';
 import { getCachedPromoConfig, setCachedPromoConfig, mergePromoConfig } from '../utils/promoCache';
 import { THEME_COLOR, THEME_COLOR_DARK, withOpacity } from '../utils/themeColors';
+import { triggerConfigSync, CONFIG_TYPES } from '../utils/configSyncTrigger';
 
 // Types for promo management
 interface PromoItem {
@@ -223,6 +224,8 @@ const [promoConfig, setPromoConfig] = useState<PromoConfig | null>(null);
         const data = await response.json();
         if (data.success) {
           showToast('Promo configuration saved successfully!', 'success');
+          // Trigger config sync to notify mobile apps
+          triggerConfigSync(CONFIG_TYPES.PROMO);
         } else {
           showToast(data.message || 'Failed to save promo configuration', 'error');
         }

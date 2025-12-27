@@ -940,6 +940,7 @@ const SecurityManagement = forwardRef<
     editProfileFeature: true,
     biometrictTrxFeature: true,
     googleLoginEnabled: false,
+    facebookLoginEnabled: false,
     blockNonVerifiedMLM: true,
     blockNonVerifiedTransfer: false,
     exchangePoinToSaldo: true,
@@ -1020,6 +1021,7 @@ const SecurityManagement = forwardRef<
     "editProfileFeature",
     "biometrictTrxFeature",
     "googleLoginEnabled",
+    "facebookLoginEnabled",
     "maxTransactionsTotal",
     "maxTransaction",
     "blockNonVerifiedMLM",
@@ -1079,6 +1081,7 @@ const SecurityManagement = forwardRef<
       editProfileFeature: "Fitur Edit Profil",
       biometrictTrxFeature: "Fitur Biometric",
       googleLoginEnabled: "Login dengan Google",
+      facebookLoginEnabled: "Login dengan Facebook",
       maxTransactionsTotal: "Maksimal Total Transaksi",
       maxTransaction: "Maksimal Per Transaksi",
       blockNonVerifiedMLM: "Blokir Registrasi Agen",
@@ -1142,6 +1145,7 @@ const SecurityManagement = forwardRef<
       editProfileFeature: "Fitur Edit Profil",
       biometrictTrxFeature: "Fitur Biometric",
       googleLoginEnabled: "Aktifkan fitur login dan hubungkan akun dengan Google. Jika dinonaktifkan, opsi Google tidak akan muncul di halaman login dan edit profil.",
+      facebookLoginEnabled: "Aktifkan fitur login dan hubungkan akun dengan Facebook. Jika dinonaktifkan, opsi Facebook tidak akan muncul di halaman login dan edit profil.",
       maxTransactionsTotal:
         "Maksimal Total Transaksi Untuk Member Yang Belum Ditandai Aman. Set 0 untuk nonaktifkan",
       maxTransaction:
