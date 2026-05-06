@@ -174,7 +174,7 @@ fn read_exe_version(exe: &str) -> Option<String> {
     let mut ptr: *mut u16 = std::ptr::null_mut();
     let mut len: u32 = 0;
     let ok = unsafe {
-        VerQueryValueW(buf.as_ptr() as _, sub.as_ptr(), &mut ptr as *mut _ as _, &mut len)
+        VerQueryValueW(buf.as_ptr() as _, sub.as_ptr(), &mut ptr as *mut *mut u16 as *mut *mut _, &mut len)
     };
     if ok == 0 || len == 0 { return None; }
 
