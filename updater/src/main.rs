@@ -47,40 +47,39 @@ fn main() {
         .json()
         .expect("Failed to parse releases");
 
-    let latest = releases
-        .into_iter()
-        .find(|r| include_prerelease || !r.prerelease);
-
+    let latest = releases.into_iter().find(|r| include_prerelease || !r.prerelease);
     let Some(release) = latest else {
         println!(" no releases found.");
         pause();
         return;
     };
 
-    // Read version from exe PE properties, compare against GitHub tag
-    // Tag format: "v0.12.9-pre", PE ProductVersion format: "0.12.9.0"
+    let is_fresh = !Path::new(PROCESS_NAME).exists();
     let current = read_exe_version(PROCESS_NAME).unwrap_or_default();
-    let tag_base = release.tag_name
-        .trim_start_matches('v')
-        .split('-')
-        .next()
-        .unwrap_or("");
 
-    // PE ProductVersion is "0.12.9" — compare directly
-    let current_base = current.trim().to_string();
+    // Tag: "v0.12.9-pre" -> "0.12.9", PE ProductVersion: "0.12.9"
+    let tag_base = release.tag_name.trim_start_matches('v').split('-').next().unwrap_or("");
 
-    if tag_base == current_base {
+    if !is_fresh && tag_base == current.trim() {
         println!(" already up to date ({}).", release.tag_name);
         pause();
         return;
     }
 
-    println!(" new version: {} (installed: {})", release.tag_name, if current.is_empty() { "unknown".into() } else { current });
-
-    if !ask_yn(&format!("Update to {}? (y/n): ", release.tag_name)) {
-        println!("Cancelled.");
-        pause();
-        return;
+    if is_fresh {
+        println!(" {} not found.", PROCESS_NAME);
+        if !ask_yn(&format!("Fresh install {}? (y/n): ", release.tag_name)) {
+            println!("Cancelled.");
+            pause();
+            return;
+        }
+    } else {
+        println!(" new version: {} (installed: {})", release.tag_name, current);
+        if !ask_yn(&format!("Update to {}? (y/n): ", release.tag_name)) {
+            println!("Cancelled.");
+            pause();
+            return;
+        }
     }
 
     let asset = release
@@ -89,36 +88,48 @@ fn main() {
         .find(|a| a.name == ASSET_NAME)
         .expect("Release asset not found");
 
-    // Graceful kill — send terminate signal
-    println!("Stopping {}...", PROCESS_NAME);
-    let _ = Command::new("taskkill")
-        .args(["/IM", PROCESS_NAME])
-        .output();
+    if !is_fresh {
+        println!("Stopping {}...", PROCESS_NAME);
 
-    // Wait up to 5s, then force kill
-    let mut stopped = false;
-    for _ in 0..5 {
-        thread::sleep(Duration::from_secs(1));
-        let out = Command::new("tasklist")
-            .args(["/FI", &format!("IMAGENAME eq {}", PROCESS_NAME), "/NH"])
-            .output()
-            .unwrap();
-        if !String::from_utf8_lossy(&out.stdout).contains(PROCESS_NAME) {
-            stopped = true;
-            break;
+        // Get PID of target process
+        let pid = get_pid(PROCESS_NAME);
+
+        if let Some(pid) = pid {
+            // Send SIGINT (Ctrl+C) via GenerateConsoleCtrlEvent
+            #[cfg(windows)]
+            unsafe {
+                winapi::um::wincon::GenerateConsoleCtrlEvent(
+                    winapi::um::wincon::CTRL_C_EVENT,
+                    pid,
+                );
+            }
+            #[cfg(not(windows))]
+            let _ = pid;
         }
-        print!(".");
-        io::stdout().flush().unwrap();
-    }
-    if !stopped {
-        println!("\nForce killing...");
-        let _ = Command::new("taskkill")
-            .args(["/IM", PROCESS_NAME, "/F"])
-            .output();
-        thread::sleep(Duration::from_secs(1));
+
+        let mut stopped = false;
+        for _ in 0..5 {
+            thread::sleep(Duration::from_secs(1));
+            let out = Command::new("tasklist")
+                .args(["/FI", &format!("IMAGENAME eq {}", PROCESS_NAME), "/NH"])
+                .output()
+                .unwrap();
+            if !String::from_utf8_lossy(&out.stdout).contains(PROCESS_NAME) {
+                stopped = true;
+                break;
+            }
+            print!(".");
+            io::stdout().flush().unwrap();
+        }
+        if !stopped {
+            println!("\nForce killing...");
+            let _ = Command::new("taskkill").args(["/IM", PROCESS_NAME, "/F"]).output();
+            thread::sleep(Duration::from_secs(1));
+        }
+        println!();
     }
 
-    println!("\nDownloading {}...", asset.name);
+    println!("Downloading {}...", asset.name);
     let bytes = client
         .get(&asset.browser_download_url)
         .send()
@@ -133,7 +144,6 @@ fn main() {
     for i in 0..archive.len() {
         let mut entry = archive.by_index(i).unwrap();
         let out_path = Path::new(entry.name());
-
         if entry.name().ends_with('/') {
             fs::create_dir_all(out_path).unwrap();
             continue;
@@ -141,42 +151,46 @@ fn main() {
         if let Some(parent) = out_path.parent() {
             fs::create_dir_all(parent).unwrap();
         }
-        let file = fs::File::create(out_path).expect("Failed to write file");
-        let mut writer = BufWriter::new(file);
+        let mut writer = BufWriter::new(fs::File::create(out_path).expect("Failed to write file"));
         io::copy(&mut entry, &mut writer).unwrap();
     }
 
-    println!("Updated to {}. Done!", release.tag_name);
+    println!("Done! Starting {}...", PROCESS_NAME);
+    let _ = Command::new(PROCESS_NAME).spawn();
     pause();
 }
 
 /// Read ProductVersion string from Windows PE version resource.
-/// Returns version string like "0.12.9" or None if not found.
 #[cfg(windows)]
 fn read_exe_version(exe: &str) -> Option<String> {
     use std::ffi::OsStr;
     use std::os::windows::ffi::OsStrExt;
-    use winapi::um::winver::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW};
     use winapi::shared::minwindef::DWORD;
+    use winapi::um::winver::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW};
 
     let path: Vec<u16> = OsStr::new(exe).encode_wide().chain(Some(0)).collect();
     let mut handle: DWORD = 0;
     let size = unsafe { GetFileVersionInfoSizeW(path.as_ptr(), &mut handle) };
-    if size == 0 { return None; }
+    if size == 0 {
+        return None;
+    }
 
     let mut buf = vec![0u8; size as usize];
     let ok = unsafe { GetFileVersionInfoW(path.as_ptr(), handle, size, buf.as_mut_ptr() as _) };
-    if ok == 0 { return None; }
+    if ok == 0 {
+        return None;
+    }
 
-    // Query the string table ProductVersion under the default language block
     let sub: Vec<u16> = OsStr::new("\\StringFileInfo\\040904b0\\ProductVersion")
-        .encode_wide().chain(Some(0)).collect();
+        .encode_wide()
+        .chain(Some(0))
+        .collect();
     let mut ptr: winapi::shared::minwindef::LPVOID = std::ptr::null_mut();
     let mut len: u32 = 0;
-    let ok = unsafe {
-        VerQueryValueW(buf.as_ptr() as _, sub.as_ptr(), &mut ptr, &mut len)
-    };
-    if ok == 0 || len == 0 { return None; }
+    let ok = unsafe { VerQueryValueW(buf.as_ptr() as _, sub.as_ptr(), &mut ptr, &mut len) };
+    if ok == 0 || len == 0 {
+        return None;
+    }
 
     let slice = unsafe { std::slice::from_raw_parts(ptr as *const u16, (len - 1) as usize) };
     Some(String::from_utf16_lossy(slice))
@@ -184,6 +198,50 @@ fn read_exe_version(exe: &str) -> Option<String> {
 
 #[cfg(not(windows))]
 fn read_exe_version(_exe: &str) -> Option<String> {
+    None
+}
+
+/// Find PID of a process by name using CreateToolhelp32Snapshot.
+#[cfg(windows)]
+fn get_pid(name: &str) -> Option<u32> {
+    use std::ffi::CString;
+    use winapi::um::tlhelp32::{
+        CreateToolhelp32Snapshot, Process32First, Process32Next, PROCESSENTRY32, TH32CS_SNAPPROCESS,
+    };
+    use winapi::um::handleapi::CloseHandle;
+    use winapi::shared::minwindef::FALSE;
+
+    let snapshot = unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0) };
+    if snapshot == winapi::um::handleapi::INVALID_HANDLE_VALUE {
+        return None;
+    }
+
+    let mut entry: PROCESSENTRY32 = unsafe { std::mem::zeroed() };
+    entry.dwSize = std::mem::size_of::<PROCESSENTRY32>() as u32;
+
+    let mut pid = None;
+    if unsafe { Process32First(snapshot, &mut entry) } != FALSE {
+        loop {
+            let exe = unsafe {
+                std::ffi::CStr::from_ptr(entry.szExeFile.as_ptr())
+                    .to_string_lossy()
+                    .to_lowercase()
+            };
+            if exe == name.to_lowercase() {
+                pid = Some(entry.th32ProcessID);
+                break;
+            }
+            if unsafe { Process32Next(snapshot, &mut entry) } == FALSE {
+                break;
+            }
+        }
+    }
+    unsafe { CloseHandle(snapshot) };
+    pid
+}
+
+#[cfg(not(windows))]
+fn get_pid(_name: &str) -> Option<u32> {
     None
 }
 

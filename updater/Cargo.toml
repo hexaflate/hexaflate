@@ -13,7 +13,7 @@ serde = { version = "1", features = ["derive"] }
 zip = "2"
 
 [target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["winver"] }
+winapi = { version = "0.3", features = ["winver", "wincon", "tlhelp32", "handleapi", "processthreadsapi"] }
 
 [build-dependencies]
 winres = "0.1"
