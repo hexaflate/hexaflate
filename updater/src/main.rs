@@ -171,14 +171,14 @@ fn read_exe_version(exe: &str) -> Option<String> {
     // Query the string table ProductVersion under the default language block
     let sub: Vec<u16> = OsStr::new("\\StringFileInfo\\040904b0\\ProductVersion")
         .encode_wide().chain(Some(0)).collect();
-    let mut ptr: *mut u16 = std::ptr::null_mut();
+    let mut ptr: winapi::shared::minwindef::LPVOID = std::ptr::null_mut();
     let mut len: u32 = 0;
     let ok = unsafe {
-        VerQueryValueW(buf.as_ptr() as _, sub.as_ptr(), &mut ptr as *mut *mut u16 as *mut *mut _, &mut len)
+        VerQueryValueW(buf.as_ptr() as _, sub.as_ptr(), &mut ptr, &mut len)
     };
     if ok == 0 || len == 0 { return None; }
 
-    let slice = unsafe { std::slice::from_raw_parts(ptr, (len - 1) as usize) };
+    let slice = unsafe { std::slice::from_raw_parts(ptr as *const u16, (len - 1) as usize) };
     Some(String::from_utf16_lossy(slice))
 }
 
