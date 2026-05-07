@@ -30,7 +30,7 @@ struct Asset {
 fn main() {
     println!("=== Hexdial Updater ===\n");
 
-    let include_prerelease = ask_yn("Include pre-release updates? (y/n): ");
+    let include_prerelease = ask_yn("Include pre-release updates?", false);
 
     let client = Client::builder()
         .user_agent("hexdial-updater")
@@ -47,7 +47,9 @@ fn main() {
         .json()
         .expect("Failed to parse releases");
 
-    let latest = releases.into_iter().find(|r| include_prerelease || !r.prerelease);
+    let latest = releases
+        .into_iter()
+        .find(|r| include_prerelease || !r.prerelease);
     let Some(release) = latest else {
         println!(" no releases found.");
         pause();
@@ -58,7 +60,12 @@ fn main() {
     let current = read_exe_version(PROCESS_NAME).unwrap_or_default();
 
     // Tag: "v0.12.9-pre" -> "0.12.9", PE ProductVersion: "0.12.9"
-    let tag_base = release.tag_name.trim_start_matches('v').split('-').next().unwrap_or("");
+    let tag_base = release
+        .tag_name
+        .trim_start_matches('v')
+        .split('-')
+        .next()
+        .unwrap_or("");
 
     if !is_fresh && tag_base == current.trim() {
         println!(" already up to date ({}).", release.tag_name);
@@ -68,14 +75,17 @@ fn main() {
 
     if is_fresh {
         println!(" {} not found.", PROCESS_NAME);
-        if !ask_yn(&format!("Fresh install {}? (y/n): ", release.tag_name)) {
+        if !ask_yn(&format!("Fresh install {}?", release.tag_name), true) {
             println!("Cancelled.");
             pause();
             return;
         }
     } else {
-        println!(" new version: {} (installed: {})", release.tag_name, current);
-        if !ask_yn(&format!("Update to {}? (y/n): ", release.tag_name)) {
+        println!(
+            " new version: {} (installed: {})",
+            release.tag_name, current
+        );
+        if !ask_yn(&format!("Update to {}?", release.tag_name), true) {
             println!("Cancelled.");
             pause();
             return;
@@ -98,10 +108,7 @@ fn main() {
             // Send SIGINT (Ctrl+C) via GenerateConsoleCtrlEvent
             #[cfg(windows)]
             unsafe {
-                winapi::um::wincon::GenerateConsoleCtrlEvent(
-                    winapi::um::wincon::CTRL_C_EVENT,
-                    pid,
-                );
+                winapi::um::wincon::GenerateConsoleCtrlEvent(winapi::um::wincon::CTRL_C_EVENT, pid);
             }
             #[cfg(not(windows))]
             let _ = pid;
@@ -123,7 +130,9 @@ fn main() {
         }
         if !stopped {
             println!("\nForce killing...");
-            let _ = Command::new("taskkill").args(["/IM", PROCESS_NAME, "/F"]).output();
+            let _ = Command::new("taskkill")
+                .args(["/IM", PROCESS_NAME, "/F"])
+                .output();
             thread::sleep(Duration::from_secs(1));
         }
         println!();
@@ -155,8 +164,7 @@ fn main() {
         io::copy(&mut entry, &mut writer).unwrap();
     }
 
-    println!("Done! Starting {}...", PROCESS_NAME);
-    let _ = Command::new(PROCESS_NAME).spawn();
+    println!("Done! Please start {} manually.", PROCESS_NAME);
     pause();
 }
 
@@ -204,12 +212,11 @@ fn read_exe_version(_exe: &str) -> Option<String> {
 /// Find PID of a process by name using CreateToolhelp32Snapshot.
 #[cfg(windows)]
 fn get_pid(name: &str) -> Option<u32> {
-    use std::ffi::CString;
+    use winapi::shared::minwindef::FALSE;
+    use winapi::um::handleapi::CloseHandle;
     use winapi::um::tlhelp32::{
         CreateToolhelp32Snapshot, Process32First, Process32Next, PROCESSENTRY32, TH32CS_SNAPPROCESS,
     };
-    use winapi::um::handleapi::CloseHandle;
-    use winapi::shared::minwindef::FALSE;
 
     let snapshot = unsafe { CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0) };
     if snapshot == winapi::um::handleapi::INVALID_HANDLE_VALUE {
@@ -245,13 +252,22 @@ fn get_pid(_name: &str) -> Option<u32> {
     None
 }
 
-fn ask_yn(prompt: &str) -> bool {
+fn ask_yn(prompt: &str, default: bool) -> bool {
+    let display = if default {
+        format!("{} (Y/n): ", prompt)
+    } else {
+        format!("{} (y/N): ", prompt)
+    };
     loop {
-        print!("{}", prompt);
+        print!("{}", display);
         io::stdout().flush().unwrap();
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
-        match input.trim().to_lowercase().as_str() {
+        let trimmed = input.trim().to_lowercase();
+        if trimmed.is_empty() {
+            return default;
+        }
+        match trimmed.as_str() {
             "y" => return true,
             "n" => return false,
             _ => println!("Please enter y or n."),
@@ -261,6 +277,7 @@ fn ask_yn(prompt: &str) -> bool {
 
 fn pause() {
     println!("\nPress Enter to exit...");
+    io::stdout().flush().unwrap();
     let mut s = String::new();
     io::stdin().read_line(&mut s).unwrap();
 }
